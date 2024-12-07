@@ -1,0 +1,9 @@
+{
+  "name": "Tag Weekly Release",
+  "description": "Configure a weekly release schedule workflow",
+  "iconName": "octicon rocket",
+  "filePatterns": [
+    "build.gradle.kts$",
+    ".*\\.md$"
+  ]
+}

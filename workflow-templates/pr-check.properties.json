@@ -1,0 +1,9 @@
+{
+  "name": "Debug Build And PR Checks",
+  "description": "Configure Debug Build And PR Checks Workflow",
+  "iconName": "octicon shield-check",
+  "filePatterns": [
+    "build.gradle.kts$",
+    ".*\\.md$"
+  ]
+}

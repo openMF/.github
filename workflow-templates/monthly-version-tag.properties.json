@@ -1,0 +1,9 @@
+{
+  "name": "Tag Monthly Release",
+  "description": "Configure a monthly release tag workflow",
+  "iconName": "octicon tag",
+  "filePatterns": [
+    "build.gradle.kts$",
+    ".*\\.md$"
+  ]
+}

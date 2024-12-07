@@ -1,0 +1,9 @@
+{
+  "name": "Build And Deploy Web App",
+  "description": "Configure Kotlin Web Application Build And Deploy Workflow",
+  "iconName": "octicon dependabot",
+  "filePatterns": [
+    "build.gradle.kts$",
+    ".*\\.md$"
+  ]
+}

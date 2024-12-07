@@ -1,0 +1,9 @@
+{
+  "name": "Promote Android Beta Application To Production",
+  "description": "Configure Promote Play Store Beta App To Production Workflow",
+  "iconName": "octicon zap",
+  "filePatterns": [
+    "build.gradle.kts$",
+    ".*\\.md$"
+  ]
+}
