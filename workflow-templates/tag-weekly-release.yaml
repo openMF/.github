@@ -55,7 +55,7 @@
 # - Callable from other workflows
 
 
-# https://github.com/niyajali/mifos-mobile-github-actions/blob/main/.github/workflows/tag-weekly-release.yaml
+# https://github.com/openMF/mifos-mobile-github-actions/blob/main/.github/workflows/tag-weekly-release.yaml
 
 # ##############################################################################
 #                 DON'T EDIT THIS FILE UNLESS NECESSARY                        #
@@ -79,7 +79,7 @@ concurrency:
 jobs:
   tag:
     name: Tag Weekly Release
-    uses: niyajali/mifos-mobile-github-actions/.github/workflows/tag-weekly-release.yaml@main
+    uses: openMF/mifos-mobile-github-actions/.github/workflows/tag-weekly-release.yaml@main
     secrets: inherit
     with:
       target_branch: 'dev'
