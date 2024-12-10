@@ -1,6 +1,6 @@
-name: "OpenMF Workflow Action"
-description: "Automates CI/CD pipelines, code quality checks, and project issue management for OpenMF repositories."
-author: "OpenMF Team"
+name: "Kotlin Multiplatform Workflow Action"
+description: "Automates CI/CD pipelines, code quality checks, and project publish Android, IOS, Desktop app on Firebase Distribution, PlayStore, App Store for Kotlin Multiplatform."
+author: "Mifos Initiative"
 branding:
   icon: "gear" # Choose an icon from GitHub's predefined list
   color: "blue" # Choose a predefined color from GitHub
