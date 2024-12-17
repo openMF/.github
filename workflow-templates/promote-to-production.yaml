@@ -1,115 +1,84 @@
-# Weekly Release Tagging and Beta Deployment Workflow
-# ===================================================
+# GitHub Actions Workflow for Play Store Release Promotion
+#
+# PURPOSE:
+# This workflow automates the process of promoting a beta release
+# to the production track on Google Play Store.
+#
+# PREREQUISITES:
+# 1. Fastlane setup with Android deployment configurations
+# 2. Configured Fastlane lanes:
+#    - `promote_to_production`: Handles beta to production promotion
+#
+# REQUIRED CONFIGURATION:
+# - Secrets:
+#   PLAYSTORECREDS: Google Play Store service account JSON credentials
+#
+# INPUTS:
+# - android_package_name: Name of the Android project module
+#   (REQUIRED, must match your project's module structure)
+#
+# WORKFLOW TRIGGERS:
+# - Can be called manually or triggered by other workflows
+# - Typically used after beta testing and validation
+#
+# DEPLOYMENT PROCESS:
+# 1. Checks out repository code
+# 2. Sets up Ruby and Fastlane environment
+# 3. Inflates Play Store credentials
+# 4. Runs Fastlane lane to promote beta to production
+#
+# IMPORTANT NOTES:
+# - Requires proper Fastlane configuration in your project
+# - Ensures consistent and automated Play Store deployments
+# - Configurable retry mechanism for upload stability
+#
+# RECOMMENDED FASTLANE LANE IMPLEMENTATION:
+# ```ruby
+# lane :promote_to_production do
+#   upload_to_play_store(
+#     track: 'beta',
+#     track_promote_to: 'production',
+#     json_key: './playStorePublishServiceCredentialsFile.json'
+#   )
+# end
+# ```
 
-# Purpose:
-# - Automate weekly version tagging for consistent software versioning
-# - Trigger automated beta releases across multiple platforms
-# - Maintain a predictable release cycle
-
-# Workflow Overview:
-# - Runs automatically every Sunday at 4:00 AM UTC
-# - Supports manual triggering via workflow_dispatch
-# - Utilizes Gradle Reckon plugin for intelligent versioning
-# - Triggers multi-platform build and publish workflow
-
-# Key Features:
-# - Automatic semantic versioning
-# - Cross-platform release automation
-# - Configurable target branch for releases
-# - Full repository history checkout for accurate versioning
-
-# Versioning Strategy:
-# - Uses Reckon Gradle plugin for semantic versioning
-# - Generates production-ready (final) version tags
-# - Provides consistent and predictable version incrementation
-
-# Release Process:
-# 1. Checkout repository with full commit history
-# 2. Setup Java 17 development environment
-# 3. Create and push new version tag
-# 4. Trigger multi-platform build and publish workflow
-
-# Prerequisites:
-# - Gradle project configured with Reckon plugin
-# - Java 17 development environment
-# - Configured multi-platform build workflow
-# - GitHub Actions permissions for workflow dispatch
-
-# Workflow Inputs:
-# - target_branch: Branch to use for releases (default: 'dev')
-#   Allows flexible release targeting across different branches
-
-# Security Considerations:
-# - Uses GitHub's native GITHUB_TOKEN for authentication
-# - Controlled workflow dispatch with specific inputs
-# - Limited to authorized repository members
-
-# Potential Use Cases:
-# - Regular software release cycles
-# - Automated beta testing distributions
-# - Consistent multi-platform deployment
-
-# Workflow Triggers:
-# - Scheduled weekly run (Sunday 4:00 AM UTC)
-# - Manual workflow dispatch
-# - Callable from other workflows
+# https://github.com/openMF/mifos-mobile-github-actions/blob/main/.github/workflows/promote-to-production.yaml
 
 # ##############################################################################
 #                 DON'T EDIT THIS FILE UNLESS NECESSARY                        #
 # ##############################################################################
 
-name: Tag Weekly Release
+name: Promote Release to Play Store
 
+# Workflow triggers:
+# 1. Manual trigger with option to publish to Play Store
+# 2. Automatic trigger when a GitHub release is published
 on:
-  # Allow manual triggering of the workflow
   workflow_dispatch:
-  # Schedule the workflow to run weekly
-  schedule:
-    # Runs at 04:00 UTC every Sunday
-    # Cron syntax: minute hour day-of-month month day-of-week
-    - cron: '0 4 */2 * 0'
+    inputs:
+      publish_to_play_store:
+        required: false
+        default: false
+        description: Publish to Play Store?
+        type: boolean
+  release:
+    types: [ released ]
 
 concurrency:
-  group: "weekly-release"
+  group: "production-deploy"
   cancel-in-progress: false
 
+permissions:
+  contents: write
+
 jobs:
-  tag:
-    name: Tag Weekly Release
-    runs-on: ubuntu-latest
-    steps:
-      # Checkout the repository with full history for proper versioning
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      # Setup Java environment for Gradle operations
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4.2.2
-        with:
-          distribution: 'temurin'
-          java-version: '17'
-
-      # Create and push a new version tag using Reckon
-      # This uses the 'final' stage for production-ready releases
-      - name: Tag Weekly Release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./gradlew :reckonTagPush -Preckon.stage=final
-
-      # Trigger the build and publish workflow for beta release
-      # This starts the process of building and deploying the app to various platforms
-      - name: Trigger Workflow
-        uses: actions/github-script@v7
-        with:
-          script: |
-            github.rest.actions.createWorkflowDispatch({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              workflow_id: 'multi-platform-build-and-publish.yml',
-              ref: 'dev', 
-              inputs: {
-                "release_type": "beta",
-              },
-            })
-
+  # Job to promote app from beta to production in Play Store
+  play_promote_production:
+    name: Promote Beta to Production Play Store
+    uses: niyajali/mifos-mobile-github-actions/.github/workflows/promote-to-production.yaml@main
+    if: ${{ inputs.publish_to_play_store == true }}
+    secrets:
+      playstore_creds: ${{ secrets.PLAYSTORECREDS }}
+    with:
+      android_package_name: 'mifospay-android'
