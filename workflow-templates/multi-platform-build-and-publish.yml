@@ -44,8 +44,6 @@
 # - publish_android: Enable/disable Android Play Store publishing
 # - build_ios: Enable/disable iOS build
 # - publish_ios: Enable/disable iOS App Store publishing
-# - publish_desktop: Enable/disable desktop app publishing
-# - publish_web: Enable/disable web app deployment (default: true)
 
 # USAGE:
 # 1. Ensure all required secrets are configured
@@ -81,25 +79,15 @@ on:
         default: false
         description: Publish Android App On Play Store
 
-      publish_ios:
-        type: boolean
-        default: false
-        description: Publish iOS App On App Store
-
-      publish_desktop:
-        type: boolean
-        default: false
-        description: Publish Desktop Apps On App Store
-
-      publish_web:
-        type: boolean
-        default: true
-        description: Publish Web App
-
       build_ios:
         type: boolean
         default: false
         description: Build iOS App
+
+      publish_ios:
+        type: boolean
+        default: false
+        description: Publish iOS App On App Store
 
 permissions:
   contents: write
@@ -124,8 +112,6 @@ jobs:
       publish_android: ${{ inputs.publish_android }}
       build_ios: ${{ inputs.build_ios }}
       publish_ios: ${{ inputs.publish_ios }}
-      publish_desktop: ${{ inputs.publish_desktop }}
-      publish_web: ${{ inputs.publish_web }}
     secrets:
       original_keystore_file: ${{ secrets.ORIGINAL_KEYSTORE_FILE }}
       original_keystore_file_password: ${{ secrets.ORIGINAL_KEYSTORE_FILE_PASSWORD }}
